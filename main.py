@@ -14,6 +14,7 @@ longpoll_vk = VkLongPoll(session_vk) #
 
 
 for event in longpoll_vk.listen():
+    mssg_send(event.peer_id, "Привет")
     if event.type == VkEventType.MESSAGE_NEW and event.to_me:
         message = event.text.lower()
         user_id = event.user_id
@@ -21,7 +22,7 @@ for event in longpoll_vk.listen():
             mssg_send(user_id, "Я тут, привет! \n"
                                "Если Вы  хотите узнать о всех доступных функциях, \n"
                                "напечатайте в сообщении слово: -- > меню")
-        elif message == "меню":
+        elif message == "Начать поиск":
             mssg_send(user_id, "1 -- Сбор информации о Вас и уточнение данных для поиска пары!\n"
                                "2 -- Возрастной диапазон для поиска пары.\n"
                                "3 -- Мои данные")
@@ -29,7 +30,11 @@ for event in longpoll_vk.listen():
             user_get_info (user_id)
             check_user_info(user_id, user_info_dct)
         elif message == "ввод":
-            pass
+            mssg_send(user_id, "Введите дату рождения: формат --> [дд.мм.гггг]")
+            for event in longpoll_vk.listen():
+                if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+                    user_info_dct["bdate"] = f"{event.text}"
+                    mssg_send(user_id, user_info_dct)
         elif message == "3":
             user_get_info(user_id)
             mssg_send(user_id, f"Вот инфа о тебе: {user_info_dct}")

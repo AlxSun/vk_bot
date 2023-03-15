@@ -23,6 +23,18 @@ def mssg_send_foto(user_id, photo_id):
         "attachment" : URL,
         "random_id": randrange (10 ** 7)})
 
+def get_bdate(user_id):
+    mssg_send(user_id, "Введите дату рождения дд.мм.гггг:")
+    for event in longpoll_vk.listen ():
+        if event.type == VkEventType.MESSAGE_NEW and event.to_me:
+            message = event.text.lower ()
+            if message:
+                return message
+            else:
+                mssg_send(user_id, "Не верно введите данные заново")
+
+
+
 def user_get_info(user_id):
     response = session_vk.method("users.get", {
         "user_id" : user_id,
@@ -30,18 +42,20 @@ def user_get_info(user_id):
         "fields" : "bdate, city, first_name"
         })
     if response:
-        for key, value in response[0].items():
-            if key == "bdate":
-                user_info_dct["bdate"] = response[0]["bdate"]
-            elif key == "sex":
-                user_info_dct["sex"] = response[0]["sex"]
-            elif key == "first_name":
-                user_info_dct["first_name"] = response[0]["first_name"]
-            elif key == "city":
-                user_info_dct["city"] = response[0]["city"]["id"]
-    else:
-        mssg_send(user_id, "Ошибка сбора информиции о пользователе!")
-        return False
+        # for key, value in response[0].items():
+            b_date = response[0].get("bdate")
+            if not b_date:
+                b_date = get_bdate(user_id)
+    #             user_info_dct["bdate"] = response[0]["bdate"]
+    #         elif key == "sex":
+    #             user_info_dct["sex"] = response[0]["sex"]
+    #         elif key == "first_name":
+    #             user_info_dct["first_name"] = response[0]["first_name"]
+    #         elif key == "city":
+    #             user_info_dct["city"] = response[0]["city"]["id"]
+    # else:
+    #     mssg_send(user_id, "Ошибка сбора информиции о пользователе!")
+    #     return False
     return user_info_dct
 
 #user_get_info(993117)

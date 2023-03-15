@@ -8,7 +8,7 @@ engine = sq.create_engine(DNS)
 class Publisher(Base):
     __tablename__ = "Contacts_vk"
     id = sq.Column(sq.Integer, primary_key=True)
-    user_id = sq.Column(sq.Integer, nullable=False, unique=False)
+    user_id = sq.Column(sq.Integer, nullable=False, unique=False)!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!primary_key
     first_name = sq.Column(sq.VARCHAR(length=40), nullable=False)
     last_name = sq.Column (sq.VARCHAR(length=40), nullable=False)
     photo_1 = sq.Column(sq.Integer, nullable=False)
